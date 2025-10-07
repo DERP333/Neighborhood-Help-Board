@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HelpBoard – Crunchyroll Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: 'Poppins', sans-serif; background: #121212; color: #eee; }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Navbar */
+    .navbar {
+      background: #1f1f1f;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+    .navbar .logo { font-size: 1.8rem; font-weight: 600; color: #ff9f1c; }
+    .navbar ul { display: flex; list-style: none; }
+    .navbar ul li { margin-left: 1.5rem; }
+    .navbar ul li a { font-size: 1rem; transition: color 0.2s; cursor: pointer; }
+    .navbar ul li a:hover { color: #ff9f1c; }
+
+    /* Hero */
+    .hero { position: relative; height: 280px; background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0HgPfNSiH9-cG6U9TmNtiRKYYGtwYuKVr7w&s') center center / cover no-repeat; animation: zoomIn 2s ease-out; }
+
+    @keyframes zoomIn {
+      from { transform: scale(1.1); }
+      to { transform: scale(1); }
+    }
+    .hero .hero-content { position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #fff; text-align: center; }
+    .hero .hero-content h1 { font-size: 2.2rem; margin-bottom: 0.6rem; animation: fadeInUp 1s ease-out; }
+    .hero .hero-content p { font-size: 1.1rem; animation: fadeInUp 1s ease-out 0.5s both; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sections */
+    .section { padding: 2rem; max-width: 1200px; margin: auto; }
+    .section-title { font-size: 1.8rem; margin-bottom: 1rem; border-left: 4px solid #ff9f1c; padding-left: 0.5rem; }
+    .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; }
+
+    /* Card */
+    .card { background: #1e1e1e; border-radius: 10px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(255,159,28,0.4); }
+    .card-body { padding: 1rem; }
+    .card-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 1px solid #333; }
+    .card-body h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .card-body p { font-size: 0.9rem; color: #ccc; }
+    .btns { margin-top: 0.8rem; }
+    .btns button { padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; margin-right: 0.4rem; transition: background 0.2s; background: linear-gradient(45deg, #ff9f1c, #ffbf69); color: #fff; }
+    .btns button:hover { background: linear-gradient(45deg, #e68a00, #ffaa33); }
+
+    /* Form */
+    #postForm { background: #1f1f1f; padding: 1rem; border-radius: 10px; margin-bottom: 2rem; }
+    #postForm input, #postForm textarea { width: 100%; margin: 0.4rem 0; padding: 0.6rem; border: none; border-radius: 5px; }
+    #postForm button { background: #ff9f1c; color: #fff; border: none; padding: 0.6rem 1rem; border-radius: 5px; cursor: pointer; }
+    #postForm button:hover { background: #e68a00; }
+
+    /* Filters */
+    .filters { margin-bottom: 1rem; }
+    .filters button { margin-right: 0.5rem; background: #333; color: #fff; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+    .filters button:hover { background: #ff9f1c; color: #000; }
+
+    footer { background: #1f1f1f; color: #aaa; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+
+    /* Hide sections initially */
+    #createSection, #myPostsSection, #profileSection { display: none; }
+
+    /* Profile Card */
+    .profile-card { display: flex; background: #1e1e1e; border-radius: 10px; padding: 1rem; }
+    .profile-sidebar { text-align: center; margin-right: 1rem; }
+    .avatar { border-radius: 50%; }
+    .status { color: #4CAF50; }
+    .profile-content { flex: 1; }
+    .profile-detail { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">HelpBoard</div>
+    <ul>
+      <li><a>Home</a></li>
+      <li><a>Requests</a></li>
+      <li><a>My Posts</a></li>
+      <li><a>Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Home Section / Hero -->
+  <section class="section" id="homeSection">
+    <div class="hero">
+      <div class="hero-content">
+        <h1>Neighborhood Help Hub</h1>
+        <p>Post, accept & complete requests in your community</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Requests Section / Post Form -->
+  <section class="section" id="createSection">
+    <div class="section-title">Create a Request</div>
+    <form id="postForm">
+      <input type="text" id="title" placeholder="Request Title" required>
+      <textarea id="desc" placeholder="Describe your request" required></textarea>
+      <input type="text" id="category" placeholder="Category (e.g. Tools, Chores)" required>
+      <input type="text" id="image" placeholder="Image URL (optional)">
+      <button type="submit">Post Request</button>
+    </form>
+  </section>
+
+  <!-- My Posts Section -->
+  <section class="section" id="myPostsSection">
+    <div class="section-title">All Requests</div>
+    <div class="filters">
+      <button onclick="filterStatus('All')">All</button>
+      <button onclick="filterStatus('Pending')">Pending</button>
+      <button onclick="filterStatus('In Progress')">In Progress</button>
+      <button onclick="filterStatus('Completed')">Completed</button>
+    </div>
+    <div class="cards-container" id="allContainer"></div>
+  </section>
+
+  <!-- Profile Section -->
+  <section class="section" id="profileSection">
+    <div class="section-title">My Profile</div>
+    <div class="profile-card">
+      <div class="profile-sidebar">
+        <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=80" alt="Avatar" class="avatar">
+        <h2>John Doe</h2>
+        <p class="status">Online</p>
+      </div>
+      <div class="profile-content">
+        <div class="profile-detail"><strong>Email:</strong> john@example.com</div>
+        <div class="profile-detail"><strong>Total Requests:</strong> <span id="totalRequests"></span></div>
+        <div class="profile-detail"><strong>Member Since:</strong> 2025</div>
+        <div class="profile-detail"><strong>Category Interests:</strong> Tools, Chores</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 HelpBoard Project
+  </footer>
+
+<script>
+  let requests = JSON.parse(localStorage.getItem("requests")) || [];
+
+  const form = document.getElementById("postForm");
+  const allContainer = document.getElementById("allContainer");
+
+  const sections = {
+    Home: document.getElementById("homeSection"),
+    Requests: document.getElementById("createSection"),
+    "My Posts": document.getElementById("myPostsSection"),
+    Profile: document.getElementById("profileSection")
+  };
+
+  document.querySelectorAll(".navbar ul li a").forEach(link => {
+    link.addEventListener("click", e => {
+      const target = e.target.innerText;
+      for (const key in sections) {
+        sections[key].style.display = key === target ? "block" : "none";
+      }
+      if(target === "Profile"){
+        document.getElementById("totalRequests").innerText = requests.length;
+      }
+    });
+  });
+
+  function saveData() { localStorage.setItem("requests", JSON.stringify(requests)); }
+
+  function renderRequests(list=requests) {
+    allContainer.innerHTML = "";
+    list.forEach((r, index) => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        ${r.image ? `<img src="${r.image}" class="card-img">` : ''}
+        <div class="card-body">
+          <h3>${r.title} <small>[${r.category}]</small></h3>
+          <p>${r.desc}</p>
+          <div><small>Status: ${r.status}</small></div>
+          <div class="btns">
+            ${ r.status === "Pending" ? `<button onclick="accept(${index})">Accept</button>` : "" }
+            ${ r.status === "In Progress" ? `<button onclick="complete(${index})">Complete</button>` : "" }
+            <button onclick="editRequest(${index})">Edit</button>
+            <button onclick="deleteRequest(${index})">Delete</button>
+          </div>
+        </div>
+      `;
+      allContainer.appendChild(div);
+    });
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const desc = document.getElementById("desc").value.trim();
+    const category = document.getElementById("category").value.trim();
+    const image = document.getElementById("image").value.trim();
+
+    if (!title || !desc || !category) return;
+
+    requests.push({ title, desc, category, image, status:"Pending" });
+    saveData();
+    renderRequests();
+    form.reset();
+  });
+
+  function accept(i) { requests[i].status = "In Progress"; saveData(); renderRequests(); }
+  function complete(i) { requests[i].status = "Completed"; saveData(); renderRequests(); }
+
+  function editRequest(i){
+    const newTitle = prompt("Edit Title", requests[i].title);
+    const newDesc = prompt("Edit Description", requests[i].desc);
+    const newCat = prompt("Edit Category", requests[i].category);
+    const newImage = prompt("Edit Image URL", requests[i].image);
+    if(newTitle && newDesc && newCat){
+      requests[i].title = newTitle;
+      requests[i].desc = newDesc;
+      requests[i].category = newCat;
+      requests[i].image = newImage;
+    }
+    saveData(); renderRequests();
+  }
+
+  function deleteRequest(i){
+    if(confirm("Delete this request?")){
+      requests.splice(i,1);
+      saveData(); renderRequests();
+    }
+  }
+
+  function filterStatus(status){
+    const filtered = status === "All" ? requests : requests.filter(r => r.status === status);
+    renderRequests(filtered);
+  }
+
+  renderRequests();
+</script>
+
+</body>
+</html>
